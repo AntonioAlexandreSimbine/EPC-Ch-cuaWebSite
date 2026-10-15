@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Montagem — Máquina de Pilar Amendoim</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  :root {
+    /* Preto profundo + branco puro + vermelho vivo + toques de dourado */
+    --preto: #0f0f10;
+    --preto-suave: #1e1e20;
+    --cinza-texto: #5a5a5e;
+    --cinza-linha: #e6e6e9;
+    --cinza-fundo: #f7f6f3;
+    --branco: #ffffff;
+    --vermelho: #d62828;
+    --vermelho-escuro: #9d1c1c;
+    --vermelho-vivo: #ff3b3b;
+    --vermelho-claro: #fdeaea;
+    --dourado: #f4a300;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Times New Roman', Times, Georgia, serif;
+    background: var(--branco);
+    color: var(--preto);
+    font-size: 19px;
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ===== TOPO ===== */
+  .topo {
+    background: var(--branco);
+    border-bottom: 3px solid var(--preto);
+    padding: 18px 26px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .topo h1 {
+    font-size: 1.35rem;
+    font-weight: bold;
+    color: var(--preto);
+    letter-spacing: 0.4px;
+  }
+
+  .progresso-topo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1rem;
+  }
+
+  .barra-progresso {
+    width: 170px;
+    height: 7px;
+    background: var(--cinza-linha);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .barra-progresso-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--vermelho), var(--dourado));
+    width: 10%;
+    transition: width 0.5s ease;
+  }
+
+  /* ===== TELA DE ENTRADA ===== */
+  .tela-entrada {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 70px 28px;
+    background:
+      radial-gradient(circle at 25% 20%, rgba(214, 40, 40, 0.08), transparent 55%),
+      radial-gradient(circle at 80% 80%, rgba(244, 163, 0, 0.08), transparent 55%),
+      var(--cinza-fundo);
+    min-height: calc(100vh - 80px);
+  }
+
+  .tela-entrada h2 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--preto);
+    margin-bottom: 18px;
+    line-height: 1.15;
+  }
+
+  .tela-entrada h2 .acento {
+    color: var(--vermelho);
+  }
+
+  .tela-entrada p {
+    font-size: 1.15rem;
+    color: var(--cinza-texto);
+    max-width: 520px;
+    margin-bottom: 36px;
+  }
+
+  .btn-iniciar {
+    background: var(--vermelho);
+    color: var(--branco);
+    border: none;
+    padding: 18px 48px;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 1.2rem;
+    font-weight: bold;
+    letter-spacing: 0.6px;
+    cursor: pointer;
+    transition: 0.25s;
+    border-bottom: 4px solid var(--vermelho-escuro);
+  }
+
+  .btn-iniciar:hover {
+    background: var(--vermelho-vivo);
+    transform: translateY(-2px);
+  }
+
+  .info-extra {
+    margin-top: 46px;
+    display: flex;
+    gap: 26px;
+    flex-wrap: wrap;
+    justify-content: center;
+    font-size: 1rem;
+    color: var(--cinza-texto);
+  }
+
+  .info-extra span {
+    border-bottom: 1px solid var(--cinza-linha);
+    padding-bottom: 4px;
+  }
+
+  /* ===== PALCO ===== */
+  .palco {
+    flex: 1;
+    padding: 30px 20px 40px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    background: var(--cinza-fundo);
+  }
+
+  .cartao {
+    background: var(--branco);
+    border: 1px solid var(--cinza-linha);
+    border-top: 5px solid var(--vermelho);
+    width: 100%;
+    max-width: 1050px;
+    display: none;
+    box-shadow: 0 4px 20px rgba(15, 15, 16, 0.08);
+  }
+
+  .cartao.ativo {
+    display: block;
+    animation: entrar 0.45s ease;
+  }
+
+  @keyframes entrar {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== CABEÇALHO DO CARTÃO ===== */
+  .cartao-cabecalho {
+    background: var(--preto);
+    color: var(--branco);
+    padding: 24px 30px;
+    display: flex;
+    align-items: center;
+    gap: 22px;
+  }
+
+  .numero-passo {
+    background: var(--vermelho);
+    color: var(--branco);
+    width: 62px;
+    height: 62px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+    font-weight: bold;
+    flex-shrink: 0;
+    border: 2px solid var(--dourado);
+  }
+
+  .cartao-cabecalho h2 {
+    font-size: 1.65rem;
+    font-weight: bold;
+    line-height: 1.2;
+  }
+
+  .cartao-cabecalho .subtitulo {
+    font-size: 1rem;
+    font-style: italic;
+    color: #c9c9cc;
+    margin-top: 3px;
+  }
+
+  /* ===== CORPO ===== */
+  .cartao-corpo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* Quando o passo não tem mídia, o info ocupa tudo */
+  .cartao-corpo.sem-midia {
+    grid-template-columns: 1fr;
+  }
+
+  /* Mídia */
+  .midia {
+    background: var(--cinza-fundo);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid var(--cinza-linha);
+  }
+
+  .midia .visor {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+    background: var(--branco);
+    border: 1px solid var(--cinza-linha);
+    transition: 0.25s;
+    text-align: center;
+    padding: 22px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .midia .visor.tipo-imagem {
+    background: linear-gradient(135deg, #ffffff 0%, #f0eef0 100%);
+  }
+
+  .midia .visor.tipo-animacao {
+    background: linear-gradient(135deg, #1a1a1c 0%, #2b2b2e 100%);
+    color: var(--branco);
+  }
+
+  .midia .visor.tipo-audio {
+    background: linear-gradient(135deg, #fdf3e6 0%, #fbebd0 100%);
+  }
+
+  .midia .visor .rotulo {
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+
+  .midia .visor .dica {
+    font-size: 0.95rem;
+    font-style: italic;
+    opacity: 0.75;
+  }
+
+  .midia .visor.tipo-animacao .rotulo { color: var(--dourado); }
+  .midia .visor.tipo-animacao .dica { color: #d6d6d9; }
+
+  .midia .visor.tipo-imagem .rotulo { color: var(--preto); }
+  .midia .visor.tipo-audio .rotulo { color: var(--vermelho-escuro); }
+
+  .midia-controles {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .chip {
+    background: var(--branco);
+    border: 1px solid var(--cinza-linha);
+    color: var(--preto);
+    padding: 9px 18px;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.25s;
+  }
+
+  .chip:hover {
+    border-color: var(--vermelho);
+    color: var(--vermelho);
+  }
+
+  .chip.ativo {
+    background: var(--preto);
+    color: var(--branco);
+    border-color: var(--preto);
+  }
+
+  /* Info */
+  .info {
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  .bloco-info h3 {
+    font-size: 1.05rem;
+    font-weight: bold;
+    color: var(--vermelho);
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid var(--cinza-linha);
+    padding-bottom: 5px;
+  }
+
+  .bloco-info p {
+    font-size: 1.12rem;
+    line-height: 1.55;
+    color: var(--preto);
+  }
+
+  /* Tabela */
+  .tabela-passo {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1.05rem;
+    margin-top: 4px;
+  }
+
+  .tabela-passo thead th {
+    background: var(--preto);
+    color: var(--branco);
+    text-align: left;
+    padding: 9px 14px;
+    font-size: 0.95rem;
+    letter-spacing: 0.6px;
+    font-weight: bold;
+    border-bottom: 2px solid var(--vermelho);
+  }
+
+  .tabela-passo tbody td {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--cinza-linha);
+    color: var(--preto);
+  }
+
+  .tabela-passo tbody tr:nth-child(even) {
+    background: var(--cinza-fundo);
+  }
+
+  /* Aviso */
+  .aviso {
+    background: var(--vermelho-claro);
+    border-left: 5px solid var(--vermelho);
+    padding: 13px 17px;
+    font-size: 1.02rem;
+    color: var(--vermelho-escuro);
+    line-height: 1.5;
+    font-weight: bold;
+  }
+
+  /* ===== NAVEGAÇÃO ===== */
+  .navegacao {
+    background: var(--branco);
+    border-top: 3px solid var(--preto);
+    padding: 14px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+    position: sticky;
+    bottom: 0;
+    z-index: 90;
+  }
+
+  .btn-nav {
+    background: var(--preto);
+    color: var(--branco);
+    border: none;
+    padding: 13px 26px;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 1.05rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.25s;
+    min-width: 130px;
+  }
+
+  .btn-nav:hover:not(:disabled) {
+    background: var(--vermelho);
+  }
+
+  .btn-nav:disabled {
+    background: var(--cinza-linha);
+    color: #9a9691;
+    cursor: not-allowed;
+  }
+
+  .btn-menu {
+    background: var(--branco);
+    color: var(--preto);
+    border: 2px solid var(--preto);
+  }
+
+  .btn-menu:hover {
+    background: var(--preto);
+    color: var(--branco);
+  }
+
+  .indicador {
+    font-size: 1rem;
+    color: var(--cinza-texto);
+    text-align: center;
+  }
+
+  .indicador strong {
+    color: var(--vermelho);
+  }
+
+  /* ===== MENU ===== */
+  .menu-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 15, 16, 0.82);
+    z-index: 200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .menu-overlay.ativo { display: flex; }
+
+  .menu-painel {
+    background: var(--branco);
+    padding: 32px;
+    max-width: 740px;
+    width: 100%;
+    max-height: 88vh;
+    overflow-y: auto;
+    border-top: 5px solid var(--vermelho);
+  }
+
+  .menu-painel h3 {
+    color: var(--preto);
+    font-size: 1.4rem;
+    margin-bottom: 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .menu-painel h3 button {
+    background: transparent;
+    border: none;
+    font-size: 1.7rem;
+    cursor: pointer;
+    color: var(--preto);
+    font-family: inherit;
+    line-height: 1;
+  }
+
+  .grade-passos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 10px;
+  }
+
+  .item-passo {
+    background: var(--cinza-fundo);
+    border: 1px solid var(--cinza-linha);
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: 0.25s;
+    text-align: left;
+    font-family: inherit;
+    color: var(--preto);
+  }
+
+  .item-passo:hover {
+    border-color: var(--vermelho);
+    background: var(--vermelho-claro);
+  }
+
+  .item-passo.atual {
+    background: var(--preto);
+    color: var(--branco);
+    border-color: var(--vermelho);
+  }
+
+  .item-passo .n {
+    font-size: 0.85rem;
+    letter-spacing: 1.5px;
+    color: var(--vermelho);
+    font-weight: bold;
+  }
+
+  .item-passo.atual .n { color: var(--dourado); }
+
+  .item-passo .t {
+    font-size: 1.05rem;
+    margin-top: 4px;
+    line-height: 1.3;
+  }
+
+  /* ===== SEÇÃO FINAL — VÍDEO RESUMO ===== */
+  .secao-video {
+    background: var(--preto);
+    color: var(--branco);
+    padding: 60px 24px 70px;
+    text-align: center;
+    border-top: 6px solid var(--vermelho);
+  }
+
+  .secao-video h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 14px;
+    color: var(--branco);
+  }
+
+  .secao-video h2 .acento {
+    color: var(--dourado);
+  }
+
+  .secao-video p {
+    font-size: 1.1rem;
+    color: #c9c9cc;
+    max-width: 620px;
+    margin: 0 auto 34px;
+  }
+
+  .video-area {
+    max-width: 920px;
+    margin: 0 auto;
+    aspect-ratio: 16 / 9;
+    background: #08080a;
+    border: 2px solid var(--vermelho);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 12px;
+    padding: 0;
+    transition: 0.25s;
+    overflow: hidden;
+  }
+
+  .video-area:hover {
+    border-color: var(--dourado);
+  }
+
+  .video-area iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+  }
+
+  .video-area .titulo-video {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: var(--dourado);
+  }
+
+  .video-area .instrucao {
+    font-size: 0.98rem;
+    font-style: italic;
+    color: #a8a4a0;
+  }
+
+  /* ===== RODAPÉ ===== */
+  .rodape {
+    background: var(--branco);
+    border-top: 1px solid var(--cinza-linha);
+    padding: 24px;
+    text-align: center;
+    font-size: 0.98rem;
+    color: var(--cinza-texto);
+  }
+
+  /* ===== RESPONSIVO ===== */
+  @media (max-width: 900px) {
+    .cartao-corpo { grid-template-columns: 1fr; }
+    .midia { border-right: none; border-bottom: 1px solid var(--cinza-linha); }
+  }
+
+  @media (max-width: 640px) {
+    body { font-size: 17px; }
+
+    .topo { padding: 14px 16px; }
+    .topo h1 { font-size: 1.1rem; }
+    .progresso-topo { font-size: 0.9rem; }
+    .barra-progresso { width: 100px; }
+
+    .tela-entrada h2 { font-size: 1.85rem; }
+    .tela-entrada p { font-size: 1.05rem; }
+    .btn-iniciar { padding: 15px 34px; font-size: 1.05rem; }
+
+    .palco { padding: 16px 12px 24px; }
+
+    .cartao-cabecalho { padding: 18px 20px; gap: 14px; }
+    .numero-passo { width: 50px; height: 50px; font-size: 1.4rem; }
+    .cartao-cabecalho h2 { font-size: 1.3rem; }
+    .cartao-cabecalho .subtitulo { font-size: 0.9rem; }
+
+    .midia { padding: 18px; }
+
+    .info { padding: 22px 18px; gap: 18px; }
+    .bloco-info h3 { font-size: 0.95rem; }
+    .bloco-info p { font-size: 1.05rem; }
+
+    .tabela-passo thead th { font-size: 0.85rem; padding: 8px 10px; }
+    .tabela-passo tbody td { font-size: 0.98rem; padding: 8px 10px; }
+
+    .navegacao { padding: 12px 14px; gap: 8px; }
+    .btn-nav { padding: 11px 16px; font-size: 0.95rem; min-width: 100px; }
+    .indicador { font-size: 0.9rem; width: 100%; order: 3; margin-top: 4px; }
+
+    .menu-painel { padding: 22px 18px; }
+    .grade-passos { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+    .item-passo .t { font-size: 0.98rem; }
+
+    .secao-video h2 { font-size: 1.55rem; }
+    .secao-video p { font-size: 1rem; }
+    .video-area .titulo-video { font-size: 1.15rem; }
+  }
+
+  @media (max-width: 380px) {
+    .btn-nav { min-width: 84px; padding: 10px 10px; font-size: 0.88rem; }
+    .topo h1 { font-size: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== TOPO ===== -->
+<div class="topo">
+  <h1>Montagem da Máquina de Pilar Amendoim</h1>
+  <div class="progresso-topo">
+    <span id="texto-progresso">Passo 1 de 8</span>
+    <div class="barra-progresso">
+      <div class="barra-progresso-fill" id="barra-fill"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TELA DE ENTRADA ===== -->
+<div class="tela-entrada" id="tela-entrada">
+  <h2>Montagem da Máquina <span class="acento">de Pilar Amendoim</span></h2>
+  <p>Oito passos, do chassi à máquina pronta. Veja as peças, as ferramentas e como tudo se encaixa.</p>
+  <button class="btn-iniciar" onclick="iniciarMontagem()">Começar a Montagem</button>
+  <div class="info-extra">
+    <span>Imagens 3D</span>
+    <span>Animações</span>
+    <span>Áudio</span>
+    <span>Ferramentas</span>
+  </div>
+</div>
+
+<!-- ===== PALCO ===== -->
+<div class="palco" id="palco" style="display:none;"></div>
+
+<!-- ===== NAVEGAÇÃO ===== -->
+<div class="navegacao" id="navegacao" style="display:none;">
+  <button class="btn-nav" id="btn-anterior" onclick="passoAnterior()">Anterior</button>
+  <button class="btn-nav btn-menu" onclick="abrirMenu()">Passos</button>
+  <span class="indicador" id="indicador">Passo <strong>1</strong> de 8</span>
+  <button class="btn-nav" id="btn-proximo" onclick="proximoPasso()">Próximo</button>
+</div>
+
+<!-- ===== MENU ===== -->
+<div class="menu-overlay" id="menu-overlay">
+  <div class="menu-painel">
+    <h3>
+      Ir para um passo
+      <button onclick="fecharMenu()">X</button>
+    </h3>
+    <div class="grade-passos" id="grade-passos"></div>
+  </div>
+</div>
+
+<!-- ===== SEÇÃO FINAL — VÍDEO RESUMO ===== -->
+<section class="secao-video" id="secao-video" style="display:none;">
+  <h2>Vídeo <span class="acento">Resumo da Montagem</span></h2>
+  <p>Animação completa do processo, do primeiro parafuso à máquina funcionando.</p>
+
+  <div class="video-area">
+    <!--
+      ============================================================
+      VÍDEO RESUMO — GOOGLE DRIVE (INCORPORADO)
+      ============================================================
+      Link original fornecido:
+      https://drive.google.com/file/d/1scEvnsOo0kpABJ6THuCvyfsXOzhM_lHt/view?usp=drive_link
+
+      ID extraído: 1scEvnsOo0kpABJ6THuCvyfsXOzhM_lHt
+
+      IMPORTANTE: o vídeo no Drive precisa estar partilhado como
+      "Qualquer pessoa com o link" para que o iframe funcione.
+      ============================================================
+    -->
+    <iframe
+      src="https://drive.google.com/file/d/1scEvnsOo0kpABJ6THuCvyfsXOzhM_lHt/preview"
+      width="100%"
+      height="100%"
+      allow="autoplay; encrypted-media"
+      allowfullscreen
+      frameborder="0">
+    </iframe>
+  </div>
+</section>
+
+<!-- ===== RODAPÉ ===== -->
+<footer class="rodape">
+  Instituto Industrial — Curso Médio de Mecânica
+</footer>
+
+<script>
+/* =========================================================
+   DADOS DOS PASSOS — 8 PASSOS
+   O campo "padrao" define qual mídia abre por primeiro:
+   "imagem", "animacao" ou "audio".
+   O passo 6 não tem imagem, por isso o campo "imagem" fica vazio
+   e o cartão é renderizado sem a coluna de mídia.
+   ========================================================= */
+const passos = [
+  {
+    n: 1,
+    titulo: "Preparação da bancada",
+    subtitulo: "Antes de começar",
+    descricao: "Separe as ferramentas, organize as peças e vista os equipamentos de proteção.",
+    pecas: ["Bancada de trabalho", "Bandeja para peças", "Equipamentos de proteção"],
+    ferramentas: ["Chaves de boca", "Martelo de borracha", "Trena"],
+    aviso: "Nunca comece sem os equipamentos de proteção.",
+    padrao: "imagem",
+    midia: {
+      imagem: "file:///C:/Users/User/Desktop/ferramentas/sketch/Sketch_Tecnico_1_Passos_1-3.png",
+      animacao: "",
+      audio: ""
+    }
+  },
+  {
+    n: 2,
+    titulo: "Montagem do chassi",
+    subtitulo: "A base da máquina",
+    descricao: "Solde ou parafuse os perfis de aço formando a estrutura. Confira o esquadro.",
+    pecas: ["Perfis de aço", "Chapas de base", "Parafusos M10"],
+    ferramentas: ["Máquina de solda", "Esquadro", "Trena"],
+    aviso: "Meça as diagonais. Se não baterem, o chassi está torto.",
+    padrao: "imagem",
+    midia: {
+      imagem: "file:///C:/Users/User/Desktop/ferramentas/sketch/Sketch_Tecnico_1_Passos_1-3.png",
+      animacao: "",
+      audio: ""
+    }
+  },
+  {
+    n: 3,
+    titulo: "Instalação dos mancais",
+    subtitulo: "Rolamentos e eixos",
+    descricao: "Pressione os rolamentos nos mancais e lubrifique antes de fixar.",
+    pecas: ["Mancais", "Rolamentos 6205", "Graxa"],
+    ferramentas: ["Prensa hidráulica", "Extrator de rolamento", "Lubrificante"],
+    aviso: "Nunca bata no rolamento com martelo. Ele trinca.",
+    padrao: "imagem",
+    midia: {
+      imagem: "file:///C:/Users/User/Desktop/ferramentas/sketch/Sketch_Tecnico_1_Passos_1-3.png",
+      animacao: "",
+      audio: ""
+    }
+  },
+  {
+    n: 4,
+    titulo: "Eixo e cilindro",
+    subtitulo: "Conjunto descascador",
+    descricao: "Encaixe o eixo nos rolamentos e acople o cilindro descascador.",
+    pecas: ["Eixo principal", "Cilindro descascador", "Chavetas"],
+    ferramentas: ["Chave allen", "Martelo de borracha", "Paquímetro"],
+    aviso: "Folga do cilindro: entre 8 e 12 mm.",
+    padrao: "imagem",
+    midia: {
+      imagem: "file:///C:/Users/User/Desktop/ferramentas/sketch/Sketch_Tecnico_2_Passos_4-6.png",
+      animacao: "",
+      audio: ""
+    }
+  },
+  {
+    n: 5,
+    titulo: "Câmara de descascamento",
+    subtitulo: "Envolvente do cilindro",
+    descricao: "Fixe a câmara ao chassi, mantendo-a centrada com o cilindro.",
+    pecas: ["Câmara em aço", "Parafusos M8", "Vedações"],
+    ferramentas: ["Chave de boca", "Torquímetro"],
+    aviso: "Se ficar torta, a casca não sai e o grão quebra.",
+    padrao: "imagem",
+    midia: {
+      imagem: "file:///C:/Users/User/Desktop/ferramentas/sketch/Sketch_Tecnico_2_Passos_4-6.png",
+      animacao: "",
+      audio: ""
+    }
+  },
+  {
+    n: 6,
+    titulo: "Montagem do motor e transmissão",
+    subtitulo: "Fonte de potência e movimento",
+    descricao: "Prenda o motor na base regulável, monte as polias, alinhe os eixos e estique as correias no ponto correto.",
+    pecas: ["Motor 1 CV", "Base regulável", "Polia motora", "Polia movida", "Correia A-42", "Parafusos de fixação"],
+    ferramentas: ["Chave combinada", "Alinhador laser", "Régua de alinhamento"],
+    aviso: "Confirme a tensão da rede antes de ligar. A correia deve ceder cerca de 10 mm ao pressionar.",
+    padrao: "animacao",
+    midia: {
+      // PASSO 6 — SEM IMAGEM CADASTRADA (espaço eliminado)
+      imagem: "",
+      animacao: "",
+      audio: ""
+    }
+  },
+  {
+    n: 7,
+    titulo: "Peneira vibratória",
+    subtitulo: "Separação dos grãos",
+    descricao: "Encaixe a peneira e ligue-a ao sistema de vibração.",
+    pecas: ["Peneira perfurada", "Molas", "Excêntrico"],
+    ferramentas: ["Chave de boca", "Nível"],
+    aviso: "As molas precisam se mover livres, sem travar.",
+    padrao: "imagem",
+    midia: {
+      imagem: "file:///C:/Users/User/Desktop/ferramentas/sketch/Sketch_Tecnico_3_Passos_7-8.png",
+      animacao: "",
+      audio: ""
+    }
+  },
+  {
+    n: 8,
+    titulo: "Funil e acabamento",
+    subtitulo: "Finalização",
+    descricao: "Coloque o funil e as bicas, pinte e faça a limpeza geral.",
+    pecas: ["Funil", "Bicas de saída", "Tinta anticorrosiva"],
+    ferramentas: ["Pincel", "Torquímetro", "Panos de limpeza"],
+    aviso: "Revise todos os parafusos antes de testar a máquina.",
+    padrao: "imagem",
+    midia: {
+      imagem: "file:///C:/Users/User/Desktop/ferramentas/sketch/Sketch_Tecnico_4_Visao_Geral.png",
+      animacao: "",
+      audio: ""
+    }
+  }
+];
+
+/* =========================================================
+   ESTADO
+   ========================================================= */
+let passoAtual = 0;
+let montagemIniciada = false;
+
+/* =========================================================
+   INICIAR
+   ========================================================= */
+function iniciarMontagem() {
+  document.getElementById('tela-entrada').style.display = 'none';
+  document.getElementById('palco').style.display = 'flex';
+  document.getElementById('navegacao').style.display = 'flex';
+  document.getElementById('secao-video').style.display = 'block';
+  montagemIniciada = true;
+  renderizarCartoes();
+  atualizarTela();
+}
+
+/* =========================================================
+   RENDERIZAR CARTÕES
+   ========================================================= */
+function renderizarCartoes() {
+  const palco = document.getElementById('palco');
+  palco.innerHTML = '';
+
+  passos.forEach((p, i) => {
+    const cartao = document.createElement('div');
+    cartao.className = 'cartao';
+    cartao.id = 'cartao-' + i;
+
+    const tabelaPecas = `
+      <table class="tabela-passo">
+        <thead><tr><th>Peça</th></tr></thead>
+        <tbody>
+          ${p.pecas.map(nome => `<tr><td>${nome}</td></tr>`).join('')}
+        </tbody>
+      </table>
+    `;
+
+    const tabelaFerramentas = `
+      <table class="tabela-passo">
+        <thead><tr><th>Ferramenta</th></tr></thead>
+        <tbody>
+          ${p.ferramentas.map(nome => `<tr><td>${nome}</td></tr>`).join('')}
+        </tbody>
+      </table>
+    `;
+
+    // Verifica se o passo tem alguma mídia cadastrada
+    const temMidia = p.midia.imagem || p.midia.animacao || p.midia.audio;
+
+    // Define mídia inicial de acordo com o campo "padrao" do passo
+    const tipoPadrao = p.padrao || 'imagem';
+    const textoInicial = p.midia[tipoPadrao];
+    const classeTipo = 'tipo-' + tipoPadrao;
+
+    let conteudoInicial;
+    if (temMidia) {
+      if (tipoPadrao === 'imagem' && p.midia.imagem) {
+        conteudoInicial = `<img src="${p.midia.imagem}" alt="${p.titulo}" style="max-width:100%; max-height:100%; object-fit:contain;">`;
+      } else if (tipoPadrao === 'animacao' && p.midia.animacao) {
+        conteudoInicial = `<video controls style="max-width:100%; max-height:100%;">
+                             <source src="${p.midia.animacao}" type="video/mp4">
+                           </video>`;
+      } else if (tipoPadrao === 'audio' && p.midia.audio) {
+        conteudoInicial = `<audio controls style="width:100%;">
+                             <source src="${p.midia.audio}" type="audio/mpeg">
+                           </audio>`;
+      } else {
+        const rotulo = (textoInicial && textoInicial !== "") ? textoInicial : "Mídia ainda não cadastrada";
+        conteudoInicial = `<div class="rotulo">${rotulo}</div>
+                           <div class="dica">Área para mídia do passo</div>`;
+      }
+    }
+
+    // Se não tem mídia, o cartão é renderizado sem a coluna da esquerda
+    const blocoMidia = temMidia ? `
+        <div class="midia">
+          <div class="visor ${classeTipo}" id="visor-${i}">
+            ${conteudoInicial}
+          </div>
+          <div class="midia-controles">
+            <button class="chip ${tipoPadrao === 'imagem' ? 'ativo' : ''}" onclick="trocarMidia(${i}, 'imagem')">Imagem</button>
+            <button class="chip ${tipoPadrao === 'animacao' ? 'ativo' : ''}" onclick="trocarMidia(${i}, 'animacao')">Animação</button>
+            <button class="chip ${tipoPadrao === 'audio' ? 'ativo' : ''}" onclick="trocarMidia(${i}, 'audio')">Áudio</button>
+          </div>
+        </div>
+    ` : '';
+
+    cartao.innerHTML = `
+      <div class="cartao-cabecalho">
+        <div class="numero-passo">${p.n}</div>
+        <div>
+          <h2>${p.titulo}</h2>
+          <div class="subtitulo">${p.subtitulo}</div>
+        </div>
+      </div>
+
+      <div class="cartao-corpo ${temMidia ? '' : 'sem-midia'}">
+        ${blocoMidia}
+
+        <div class="info">
+          <div class="bloco-info">
+            <h3>O que fazer</h3>
+            <p>${p.descricao}</p>
+          </div>
+
+          <div class="bloco-info">
+            <h3>Peças deste passo</h3>
+            ${tabelaPecas}
+          </div>
+
+          <div class="bloco-info">
+            <h3>Ferramentas</h3>
+            ${tabelaFerramentas}
+          </div>
+
+          <div class="aviso">${p.aviso}</div>
+        </div>
+      </div>
+    `;
+
+    palco.appendChild(cartao);
+  });
+}
+
+/* =========================================================
+   ATUALIZAR TELA
+   ========================================================= */
+function atualizarTela() {
+  document.querySelectorAll('.cartao').forEach(c => c.classList.remove('ativo'));
+  document.getElementById('cartao-' + passoAtual).classList.add('ativo');
+
+  const pct = ((passoAtual + 1) / passos.length) * 100;
+  document.getElementById('barra-fill').style.width = pct + '%';
+
+  document.getElementById('texto-progresso').textContent =
+    `Passo ${passoAtual + 1} de ${passos.length}`;
+  document.getElementById('indicador').innerHTML =
+    `Passo <strong>${passoAtual + 1}</strong> de ${passos.length}`;
+
+  document.getElementById('btn-anterior').disabled = passoAtual === 0;
+
+  const btnProx = document.getElementById('btn-proximo');
+  btnProx.textContent = (passoAtual === passos.length - 1) ? 'Concluir' : 'Próximo';
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* =========================================================
+   NAVEGAÇÃO
+   ========================================================= */
+function proximoPasso() {
+  if (passoAtual < passos.length - 1) {
+    passoAtual++;
+    atualizarTela();
+  } else {
+    document.getElementById('secao-video').scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
+function passoAnterior() {
+  if (passoAtual > 0) {
+    passoAtual--;
+    atualizarTela();
+  }
+}
+
+/* =========================================================
+   TROCA DE MÍDIA
+   ========================================================= */
+function trocarMidia(indice, tipo) {
+  const visor = document.getElementById('visor-' + indice);
+  if (!visor) return;
+  const p = passos[indice];
+  const controles = visor.parentElement.querySelectorAll('.chip');
+  controles.forEach(c => c.classList.remove('ativo'));
+
+  visor.classList.remove('tipo-imagem', 'tipo-animacao', 'tipo-audio');
+  visor.classList.add('tipo-' + tipo);
+
+  let conteudo = '';
+  if (tipo === 'imagem') {
+    if (p.midia.imagem) {
+      conteudo = `<img src="${p.midia.imagem}" alt="${p.titulo}" style="max-width:100%; max-height:100%; object-fit:contain;">`;
+    } else {
+      conteudo = `<div class="rotulo">Imagem ainda não cadastrada</div>
+                  <div class="dica">Espaço reservado para a imagem do passo</div>`;
+    }
+    controles[0].classList.add('ativo');
+  } else if (tipo === 'animacao') {
+    if (p.midia.animacao) {
+      conteudo = `<video controls style="max-width:100%; max-height:100%;">
+                    <source src="${p.midia.animacao}" type="video/mp4">
+                  </video>`;
+    } else {
+      conteudo = `<div class="rotulo">Animação ainda não cadastrada</div>
+                  <div class="dica">Espaço reservado para a animação do passo</div>`;
+    }
+    controles[1].classList.add('ativo');
+  } else {
+    if (p.midia.audio) {
+      conteudo = `<audio controls style="width:100%;">
+                    <source src="${p.midia.audio}" type="audio/mpeg">
+                  </audio>`;
+    } else {
+      conteudo = `<div class="rotulo">Áudio ainda não cadastrado</div>
+                  <div class="dica">Espaço reservado para o áudio do passo</div>`;
+    }
+    controles[2].classList.add('ativo');
+  }
+
+  visor.innerHTML = conteudo;
+}
+
+/* =========================================================
+   MENU
+   ========================================================= */
+function abrirMenu() {
+  const grade = document.getElementById('grade-passos');
+  grade.innerHTML = '';
+
+  passos.forEach((p, i) => {
+    const item = document.createElement('button');
+    item.className = 'item-passo' + (i === passoAtual ? ' atual' : '');
+    item.innerHTML = `<div class="n">PASSO ${p.n}</div><div class="t">${p.titulo}</div>`;
+    item.onclick = () => {
+      passoAtual = i;
+      atualizarTela();
+      fecharMenu();
+    };
+    grade.appendChild(item);
+  });
+
+  document.getElementById('menu-overlay').classList.add('ativo');
+}
+
+function fecharMenu() {
+  document.getElementById('menu-overlay').classList.remove('ativo');
+}
+
+document.getElementById('menu-overlay').addEventListener('click', e => {
+  if (e.target.id === 'menu-overlay') fecharMenu();
+});
+
+document.addEventListener('keydown', e => {
+  if (!montagemIniciada) return;
+  if (e.key === 'ArrowRight') proximoPasso();
+  if (e.key === 'ArrowLeft') passoAnterior();
+  if (e.key === 'Escape') fecharMenu();
+});
+</script>
+
+</body>
+</html>
